@@ -1,8 +1,9 @@
 ﻿/*
-null = [_container] execVM "ns_PrivateBox\pb_showBoxContents_HintC.sqf";
-Вызвается из pb_client.sqf
+
+	[_container] spawn NSA_fnc_pb_showBoxContents_HintC;
 
 */
+
 private ["_unit", "_listedItemClasses", "_allGear", "_compText"];
 
 _unit = _this select 0;
@@ -23,7 +24,7 @@ if (count (backpackCargo _unit) > 0) then {
   _allGear = _allGear + (backpackCargo _unit);
 };
 
-_compText = composeText [parseText "<t size='1.2' align='center' underline='true' shadow='2'>Содержимое ящика:<br/></t>"];
+_compText = composeText [parseText format ["<t size='1.2' align='center' underline='true' shadow='2'>%1<br/></t>", localize "STR_NSA_pb_boxContainer"]];
 
 {
   if (!(_x in _listedItemClasses)) then {
@@ -54,5 +55,6 @@ hintC_arr_EH = findDisplay 72 displayAddEventHandler ["unload", {
 	0 = _this spawn {
 		_this select 0 displayRemoveEventHandler ["unload", hintC_arr_EH];
 		hintSilent "";
+		hintC_arr_EH = nil;
 	};
 }];

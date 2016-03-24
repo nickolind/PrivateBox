@@ -1,16 +1,17 @@
-﻿/*
-null = [_container] execVM "ns_PrivateBox\pb_showBoxContents_ACE.sqf";
-Вызвается из pb_client.sqf
+﻿
+/*
+	This method is dependable on ACE Interaction - and currently not working
 
-Скрипт зависит от функций ACE Interaction - без этого компонента, вызывать скрипт не стоит.
+	[_container] spawn NSA_fnc_pb_showBoxContents_ACE;
 */
+
 private ["_unit", "_listedItemClasses", "_actions", "_allGear"];
 
 _unit = _this select 0;
 
 _listedItemClasses = [];
 
-_actions = ["Содержимое ящика:", localize ""] call ACE_Interaction_fnc_prepareSelectMenu;
+_actions = [localize "STR_NSA_pb_boxContainer", localize ""] call ACE_Interaction_fnc_prepareSelectMenu;
 
 _allGear = [];
 

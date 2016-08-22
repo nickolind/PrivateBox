@@ -11,39 +11,37 @@ _unit = _this select 0;
 _allGear = [];
 _listedItemClasses = [];
 
-if (count (weaponCargo _unit) > 0) then {
-  _allGear = _allGear + (weaponCargo _unit);
-};
-if (count (itemCargo _unit) > 0) then {
-  _allGear = _allGear + (itemCargo _unit);
-};
-if (count (magazineCargo _unit) > 0) then {
-  _allGear = _allGear + (magazineCargo _unit);
-};
-if (count (backpackCargo _unit) > 0) then {
-  _allGear = _allGear + (backpackCargo _unit);
-};
+_allGear = (weaponCargo _unit + magazinecargo _unit + itemCargo _unit + backpackCargo _unit) call BIS_fnc_consolidateArray;
 
 _compText = composeText [parseText format ["<t size='1.2' align='center' underline='true' shadow='2'>%1<br/></t>", localize "STR_NSA_pb_boxContainer"]];
 
 {
-  if (!(_x in _listedItemClasses)) then {
-    private ["_item","_itemImage","_itemName","_invItem"];
-    _item = configFile >> "CfgMagazines" >> _x;
+  if (!((_x select 0) in _listedItemClasses)) then {
+    private ["_item","_itemImage","_itemName","_invItem", "_itemCount"];
+    _item = configFile >> "CfgMagazines" >> (_x select 0);
     if (isNil "_item" || str _item == "") then {
-      _item = configFile >> "CfgWeapons" >> _x;
+      _item = configFile >> "CfgWeapons" >> (_x select 0);
     };
 	if (isNil "_item" || str _item == "") then {
-      _item = configFile >> "CfgGlasses" >> _x;
+      _item = configFile >> "CfgGlasses" >> (_x select 0);
     };
 	if (isNil "_item" || str _item == "") then { 
-      _item = configFile >> "CfgVehicles" >> _x;
+      _item = configFile >> "CfgVehicles" >> (_x select 0);
     };
-	_itemImage = getText(_item >> "picture"); 
+	
 	_itemName = getText(_item >> "displayName");
-	_invItem = composeText [parseText "<br/>", image _itemImage, " ", _itemName];
+	_itemCount = str (_x select 1);
+	
+	// if (count _allGear < 25) then {
+		// _itemImage = parseText format ["<img size='1.2' image='%1'/>", getText(_item >> "picture")];
+		// _invItem = composeText [parseText "<br/>", _itemImage, " x", _itemCount, " - ", _itemName];
+	// } else {
+		_itemImage = parseText format ["<img size='2.5' image='%1'/>", getText(_item >> "picture")];
+		_invItem = composeText [_itemImage, "x", _itemCount, "       "];
+	// };
+
 	_compText = composeText [_compText, _invItem];
-    _listedItemClasses pushBack _x;
+    _listedItemClasses pushBack (_x select 0);
   };
 } forEach (_allGear);
 
